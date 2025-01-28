@@ -6,19 +6,22 @@ import jakarta.persistence.Id;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
 @Entity
-public class Project
-{
+public class Project {
+
     @Id
     @GeneratedValue
     private Long id;
     private String name;
     private String risk;
-    private LocalDate timeline;
     private String milestone;
     private BigDecimal budget;
     private Long dependency;
+    private LocalDate startDate; // Added new field
+    private LocalDate endDate;   // Added new field
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -41,14 +44,6 @@ public class Project
 
     public void setRisk(String risk) {
         this.risk = risk;
-    }
-
-    public LocalDate getTimeline() {
-        return timeline;
-    }
-
-    public void setTimeline(LocalDate timeline) {
-        this.timeline = timeline;
     }
 
     public String getMilestone() {
@@ -75,5 +70,19 @@ public class Project
         this.dependency = dependency;
     }
 
+    public LocalDate getStartDate() {
+        return startDate;
+    }
 
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
 }

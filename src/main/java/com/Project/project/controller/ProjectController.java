@@ -5,13 +5,11 @@ import com.Project.project.model.Project;
 import com.Project.project.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
-@CrossOrigin("http://localhost:3002")
+@CrossOrigin("http://localhost:3000")
 public class ProjectController {
-
 
     @Autowired
     private ProjectRepository projectRepository;
@@ -23,7 +21,7 @@ public class ProjectController {
 
     @GetMapping("/project")
     public List<Project> getAllProjects() {
-        return projectRepository.findAll(); // Call findAll on the injected instance, not the class
+        return projectRepository.findAll();
     }
 
     @GetMapping("/project/{id}")
@@ -33,27 +31,44 @@ public class ProjectController {
     }
 
     @PutMapping("/project/{id}")
-    Project UpdateProject(@RequestBody Project newProject, @PathVariable Long id) {
+    Project updateProject(@RequestBody Project newProject, @PathVariable Long id) {
         return projectRepository.findById(id)
-                .map(Project -> {
-                    Project.setName(newProject.getName());
-                    Project.setRisk(newProject.getRisk());
-                    Project.setTimeline(newProject.getTimeline());
-                    Project.setMilestone(newProject.getMilestone());
-                    Project.setBudget(newProject.getBudget());
-                    Project.setDependency(newProject.getDependency());
-                    return projectRepository.save(Project);
+                .map(project -> {
+                    project.setName(newProject.getName());
+                    project.setRisk(newProject.getRisk());
+                    project.setMilestone(newProject.getMilestone());
+                    project.setBudget(newProject.getBudget());
+                    project.setDependency(newProject.getDependency());
+                    project.setStartDate(newProject.getStartDate()); // Update startDate
+                    project.setEndDate(newProject.getEndDate());     // Update endDate
+                    return projectRepository.save(project);
                 }).orElseThrow(() -> new ProjectNotFoundException(id));
-
     }
 
     @DeleteMapping("/project/{id}")
     public String deleteProject(@PathVariable Long id) {
         if (!projectRepository.existsById(id)) {
             throw new ProjectNotFoundException(id);
-
         }
         projectRepository.deleteById(id);
-        return "Project With id" + id + " has been deleted success.";
+        return "Project With id " + id + " has been deleted success.";
+    }
+
+    @GetMapping("/project/sorted/{sortBy}")
+    public List<Project> getSortedProjects(@PathVariable String sortBy) {
+        switch (sortBy.toLowerCase()) {
+            case "budget":
+                return projectRepository.findAllByOrderByBudgetAsc();
+            case "milestone":
+                return projectRepository.findAllByOrderByMilestoneAsc();
+            case "risk":
+                return projectRepository.findAllByOrderByRiskCustom(); // Use custom sorting for risk
+            case "dependency":
+                return projectRepository.findAllByOrderByDependencyAsc();
+            case "date":
+                return projectRepository.findAllByOrderByStartDateAsc();
+            default:
+                throw new IllegalArgumentException("Invalid sort criteria: " + sortBy);
+        }
     }
 }
