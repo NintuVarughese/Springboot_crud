@@ -25,32 +25,35 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project getProjectById(Long id) {
-        return projectRepository.findById(id)
-                .orElseThrow(() -> new ProjectNotFoundException(id));
+    public Project getProjectByProjectID(Long projectID) {  // Updated method name
+        return projectRepository.findById(projectID)
+                .orElseThrow(() -> new ProjectNotFoundException(projectID));
     }
 
     @Override
-    public Project updateProject(Project newProject, Long id) {
-        return projectRepository.findById(id)
+    public Project updateProject(Project newProject, Long projectID) { // Updated method name
+        return projectRepository.findById(projectID)
                 .map(project -> {
-                    project.setName(newProject.getName());
-                    project.setRisk(newProject.getRisk());
-                    project.setMilestone(newProject.getMilestone());
+                    project.setClientName(newProject.getClientName());   // Updated field names
+                    project.setProgramName(newProject.getProgramName());
+                    project.setDescription(newProject.getDescription());
+                    project.setEngineeringManager(newProject.getEngineeringManager());
+                    project.setScope(newProject.getScope());
+                    project.setContractTypeName(newProject.getContractTypeName());
+                    project.setPhaseName(newProject.getPhaseName());   // Dropdown field
                     project.setBudget(newProject.getBudget());
-                    project.setDependency(newProject.getDependency());
                     project.setStartDate(newProject.getStartDate()); // Set startDate
                     project.setEndDate(newProject.getEndDate());     // Set endDate
                     return projectRepository.save(project);
-                }).orElseThrow(() -> new ProjectNotFoundException(id));
+                }).orElseThrow(() -> new ProjectNotFoundException(projectID));
     }
 
     @Override
-    public String deleteProject(Long id) {
-        if (!projectRepository.existsById(id)) {
-            throw new ProjectNotFoundException(id);
+    public String deleteProject(Long projectID) {  // Updated parameter name
+        if (!projectRepository.existsById(projectID)) {
+            throw new ProjectNotFoundException(projectID);
         }
-        projectRepository.deleteById(id);
-        return "Project With id " + id + " has been deleted successfully.";
+        projectRepository.deleteById(projectID);
+        return "Project with ProjectID " + projectID + " has been deleted successfully.";
     }
 }

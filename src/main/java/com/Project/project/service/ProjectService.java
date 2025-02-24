@@ -1,7 +1,6 @@
 package com.Project.project.service;
 
 import com.Project.project.model.Project;
-
 import java.util.List;
 
 public interface ProjectService {
@@ -9,9 +8,9 @@ public interface ProjectService {
 
     List<Project> getAllProjects();
 
-    Project getProjectById(Long id);
+    Project getProjectByProjectID(Long projectID);  // Changed from id to ProjectID
 
-    Project updateProject(Project newProject, Long id);
+    Project updateProject(Project newProject, Long projectID);  // Changed from id to ProjectID
 
-    String deleteProject(Long id);
+    String deleteProject(Long projectID);  // Changed from id to ProjectID
 }
